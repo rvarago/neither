@@ -111,10 +111,10 @@ namespace {
 
     template<typename T, typename std::enable_if_t<!std::is_void<T>::value>* = nullptr>
     bool equal(Maybe<T> const &a, Maybe<T> const &b) {
-        if (a.hasValue) {
-            return b.hasValue && a.value == b.value;
+        if (!a.empty()) {
+            return !b.empty() && a.value == b.value;
         }
-        return !b.hasValue;
+        return b.empty();
     }
 
     template <typename T, typename std::enable_if_t<std::is_void<T>::value>* = nullptr>
