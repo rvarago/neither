@@ -18,6 +18,6 @@ TEST(neither, lift_maybes) {
   );
 
 
-  ASSERT_TRUE(sum1.hasValue && sum1.value == 12);
-  ASSERT_TRUE(!sum2.hasValue);
+  ASSERT_TRUE(!sum1.empty() && sum1.value == 12);
+  ASSERT_TRUE(sum2.empty());
 }

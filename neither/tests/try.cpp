@@ -13,8 +13,8 @@ TEST(neither, try_and_fail) {
   auto result = e.join([](auto x) { return x; }, [](auto x) { return 1; });
 
   ASSERT_TRUE(result == 42);
-  ASSERT_TRUE(e.left().hasValue);
-  ASSERT_TRUE(!e.right().hasValue);
+  ASSERT_TRUE(!e.left().empty());
+  ASSERT_TRUE(e.right().empty());
 }
 
 TEST(neither, try_and_succeed) {
@@ -26,6 +26,6 @@ TEST(neither, try_and_succeed) {
   auto result = e.join([](auto x) { return 1; }, [](auto x) { return x; });
 
   ASSERT_TRUE(result == 42);
-  ASSERT_TRUE(!e.left().hasValue);
-  ASSERT_TRUE(e.right().hasValue);
+  ASSERT_TRUE(e.left().empty());
+  ASSERT_TRUE(!e.right().empty());
 }
