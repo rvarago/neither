@@ -21,6 +21,7 @@ template <class T> struct Maybe {
     T value;
   };
 
+  [[deprecated("hasValue shall be made private in the future. Use !empty() instead")]]
   bool const hasValue;
 
   constexpr Maybe() : hasValue{false} {}
