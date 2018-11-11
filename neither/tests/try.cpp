@@ -17,7 +17,7 @@ TEST(neither, try_and_fail) {
   ASSERT_TRUE(!e.right().hasValue);
 }
 
-TEST(neither, try_and_suceed) {
+TEST(neither, try_and_succeed) {
 
   using namespace neither;
 
