@@ -6,6 +6,7 @@
 #include <cstddef>
 #include <type_traits>
 #include <neither/traits.hpp>
+#include <iterator>
 
 namespace neither {
 
@@ -99,6 +100,29 @@ template <class T> struct Maybe {
   }
 
   constexpr operator bool() const { return hasValue; }
+
+
+  constexpr iterator begin() {
+      if (empty()) {
+          return end();
+      }
+      return iterator<T>{*this};
+  }
+
+  constexpr iterator end() {
+      return iterator<T>{};
+  }
+
+  constexpr const_iterator begin() const {
+      if (empty()) {
+          return end()
+      }
+      return iterator<const T>{*this};
+  }
+
+  constexpr const_iterator end() const {
+      return iterator<T>{};
+  }
 };
 
 template <typename T>
@@ -133,6 +157,59 @@ bool operator != (Maybe<T> const& a, Maybe<T> const& b) {
 }
 
 static const auto none = maybe();
+
+namespace detail {
+
+  template <typename T>
+  class maybe_iterator {
+  public:
+      using iterator_category = std::forward_iterator_tag;
+      using value_type = std::remove_cv_t<T>;
+      using difference_type = std::ptrdiff_t;
+      using pointer = value_type*;
+      using reference = value_type&;
+
+      constexpr maybe_iterator() = default;
+
+      constexpr explicit maybe_iterator(Maybe<T> const& container) :
+        underlying_container{&container} {}
+
+      constexpr const reference operator++() {
+          visited = true;
+          return underlying_container->unsafeGet();
+      }
+
+      constexpr const reference operator++(int) {
+          return ++this;
+      }
+
+      constexpr const reference operator*() const
+      {
+          return underlying_container->unsafeGet();
+      }
+
+      constexpr const reference operator->() const
+      {
+          return underlying_container->unsafeGet();
+      }
+
+  private:
+      Maybe<T>* underlying_container{nullptr};
+      bool visited{false};
+  };
+
+  template <typename T1, typename T2>
+  constexpr bool operator==(maybe_iterator<T1> const& lhs, maybe_iterator<T2> const& rhs) {
+      return lhs.underlying_container == rhs.underlying_container && lhs.visited == rhs.visited;
+  }
+
+  template <typename T1, typename T2>
+  constexpr bool operator!=(maybe_iterator<T1> const& lhs, maybe_iterator<T2> const& rhs) {
+      return !(lhs == rhs);
+  }
+
+}
+
 
 }
 
